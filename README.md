@@ -1,6 +1,17 @@
+# YouTube
+
+This project was created from this
+[video](https://www.youtube.com/watch?v=CHSL0Btbj_o&t=3s)
+
+# Node version
+
+_v18.15.0_
+
 # Nuxt 3 Minimal Starter
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Look at the
+[Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to
+learn more.
 
 ## Setup
 
@@ -60,4 +71,7 @@ pnpm run preview
 yarn preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Check out the
+[deployment documentation](https://nuxt.com/docs/getting-started/deployment) for
+more information.
+
