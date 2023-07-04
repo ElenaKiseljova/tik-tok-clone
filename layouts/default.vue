@@ -12,7 +12,8 @@ const route = useRoute();
     <div class="">
       <NavSide />
     </div>
+
+    <slot />
   </div>
-  <slot />
 </template>
 
