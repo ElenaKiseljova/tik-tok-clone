@@ -15,11 +15,7 @@ const showMenu = ref(false);
     >
       <div :class="route.fullPath === '/' ? 'w-[80%]' : 'lg:w-[20%] w-[70%]'">
         <NuxtLink to="/">
-          <img
-            width="115"
-            src="~/assets/images/tiktok-logo.png"
-            alt="Tik-Tok logo"
-          />
+          <BaseLogo mode="dark" />
         </NuxtLink>
       </div>
 
@@ -40,19 +36,15 @@ const showMenu = ref(false);
       <div
         class="flex items-center justify-end gap-3 min-w-[275px] max-w-[320px] w-full"
       >
-        <button
-          class="flex ite border rounded-sm px-3 py-[6px] hover:bg-gray-100"
-        >
+        <BaseButton color="white" size="small">
           <Icon name="mdi:plus" color="#000000" size="22" />
           <span class="px-2 font-medium text-[15px]">Upload</span>
-        </button>
+        </BaseButton>
 
         <div v-if="false" class="flex items-center">
-          <button
-            class="flex items-center bg-[#f02c56] text-white border rounded-md px-3 py-[6px]"
-          >
+          <BaseButton class="mt-8" @click="() => console.log('hello')">
             <span class="mx-4 font-medium text-[15px]">Log in</span>
-          </button>
+          </BaseButton>
 
           <Icon name="mdi:dots-vertical" color="#161724" size="25" />
         </div>

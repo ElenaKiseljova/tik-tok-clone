@@ -9,7 +9,26 @@ module.exports = {
     './app.vue',
   ],
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        screen: '100dvw',
+      },
+      minWidth: {
+        screen: '100dvw',
+      },
+      maxWidth: {
+        screen: '100dvw',
+      },
+      height: {
+        screen: '100dvh',
+      },
+      minHeight: {
+        screen: '100dvh',
+      },
+      maxHeight: {
+        screen: '100dvh',
+      },
+    },
   },
   plugins: [],
 };

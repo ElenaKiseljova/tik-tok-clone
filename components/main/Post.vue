@@ -67,12 +67,7 @@ onMounted(() => {
             src="/flowers.mp4"
           />
 
-          <img
-            class="absolute right-2 bottom-14"
-            src="~/assets/images/tiktok-logo-white.png"
-            alt="img"
-            width="90"
-          />
+          <BaseLogo mode="white" class="absolute right-2 bottom-14" />
         </div>
 
         <div class="relative mr-[75px]">
