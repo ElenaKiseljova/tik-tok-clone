@@ -64,7 +64,7 @@ const showMenu = ref(false);
           />
 
           <div class="relative">
-            <button @click="($event) => (showMenu = !showMenu)" class="mt-1">
+            <button @click="() => (showMenu = !showMenu)" class="mt-1">
               <img
                 width="33"
                 src="https://picsum.photos/id/83/300/320"
@@ -79,7 +79,7 @@ const showMenu = ref(false);
               class="absolute bg-white rounded-lg py-1.5 w-[200px] shadow-xl border top-[43px] -right-2"
             >
               <NuxtLink
-                @click="($event) => (showMenu = false)"
+                @click="() => (showMenu = false)"
                 class="flex items-center justify-start py-3 px-2 hover:bg-gray-100 cursor-pointer"
               >
                 <Icon name="ph:user" size="20" />

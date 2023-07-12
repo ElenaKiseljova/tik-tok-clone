@@ -65,7 +65,7 @@ definePageMeta({
         Videos
       </div>
       <div
-        class="w-60 text-center py-2 text-[17px] text-gray-500 font-semibold border-b-2 border-b-black"
+        class="w-60 text-center py-2 text-[17px] text-gray-500 font-semibold"
       >
         <Icon class="mb-0.5" name="material-symbols:lock-open" /> Liked
       </div>
@@ -74,6 +74,17 @@ definePageMeta({
     <div
       class="mt-4 grid 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3"
     >
+      <PostUser />
+      <PostUser />
+      <PostUser />
+      <PostUser />
+      <PostUser />
+      <PostUser />
+      <PostUser />
+      <PostUser />
+      <PostUser />
+      <PostUser />
+      <PostUser />
       <PostUser />
     </div>
   </div>

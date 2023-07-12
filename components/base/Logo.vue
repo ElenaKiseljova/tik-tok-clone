@@ -6,7 +6,7 @@ const { mode } = defineProps({
     default: 'dark',
     validator(value) {
       // The value must match one of these strings
-      return ['white', 'dark'].includes(value);
+      return ['white', 'dark', 'small'].includes(value);
     },
   },
 });
@@ -19,11 +19,19 @@ const { mode } = defineProps({
     alt="Tik-Tok logo"
     width="90"
   />
+
   <img
-    v-else
+    v-else-if="mode === 'dark'"
     width="115"
     src="~/assets/images/tiktok-logo.png"
     alt="Tik-Tok logo"
+  />
+
+  <img
+    v-else
+    src="~/assets/images/tiktok-logo-small.png"
+    alt="Tik-Tok logo"
+    width="45"
   />
 </template>
 
