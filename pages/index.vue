@@ -6,7 +6,7 @@ definePageMeta({
 
 <template>
   <div class="pt-[80px] w-[calc(100%-90px)] max-w-[690px]">
-    <MainPost />
+    <PostMain />
   </div>
 </template>
 

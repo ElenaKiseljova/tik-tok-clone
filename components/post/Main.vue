@@ -7,7 +7,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="MainPost" class="flex border-b py-6">
+  <div class="flex border-b py-6">
     <div class="cursor-pointer">
       <div class="w-[60px] h-[60px] shrink-0">
         <img
