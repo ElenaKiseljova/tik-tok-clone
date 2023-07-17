@@ -5,6 +5,8 @@
 
   <NuxtLayout>
     <NuxtPage />
+
+    <AuthOverlay />
   </NuxtLayout>
 </template>
 
