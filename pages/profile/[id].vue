@@ -2,6 +2,9 @@
 definePageMeta({
   layout: 'default',
 });
+
+const { $generalStore } = useNuxtApp();
+const { setIsEditProfileOpen } = $generalStore;
 </script>
 
 <template>
@@ -19,7 +22,13 @@ definePageMeta({
         <h1 class="text-[30px] font-bold truncate">User name</h1>
         <p class="text-[15px] truncate">User name</p>
 
-        <BaseButton class="mt-3" v-if="true" size="small" color="white">
+        <BaseButton
+          @click="() => setIsEditProfileOpen(true)"
+          class="mt-3"
+          v-if="true"
+          size="small"
+          color="white"
+        >
           <Icon class="mt-0.5 mr-1" name="mdi:pencil" size="18" />
           <span>Edit profile</span>
         </BaseButton>

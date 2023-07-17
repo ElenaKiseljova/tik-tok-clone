@@ -25,6 +25,10 @@ export const useGeneralStore = defineStore(
       isLoginOpen.value = val;
     };
 
+    const setIsEditProfileOpen = (val) => {
+      isEditProfileOpen.value = val;
+    };
+
     return {
       // Getters
       getIsLoginOpen,
@@ -38,6 +42,7 @@ export const useGeneralStore = defineStore(
 
       // Actions
       setIsLoginOpen,
+      setIsEditProfileOpen,
     };
   },
   {
