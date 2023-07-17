@@ -1,3 +1,10 @@
+<script setup>
+import { storeToRefs } from 'pinia';
+
+const { $generalStore } = useNuxtApp();
+const { getIsLoginOpen } = storeToRefs($generalStore);
+</script>
+
 <template>
   <Head>
     <title>TikTok [clone]</title>
@@ -6,7 +13,7 @@
   <NuxtLayout>
     <NuxtPage />
 
-    <AuthOverlay />
+    <AuthOverlay v-if="getIsLoginOpen" />
   </NuxtLayout>
 </template>
 

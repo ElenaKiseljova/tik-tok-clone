@@ -1,4 +1,11 @@
 <script setup>
+import { storeToRefs } from 'pinia';
+
+const { $userStore, $generalStore } = useNuxtApp();
+const { getId } = storeToRefs($userStore);
+
+const { setIsLoginOpen } = $generalStore;
+
 const route = useRoute();
 
 const showMenu = ref(false);
@@ -41,15 +48,15 @@ const showMenu = ref(false);
           <span class="px-2 font-medium text-[15px]">Upload</span>
         </BaseButton>
 
-        <div v-if="false" class="flex items-center">
-          <BaseButton class="mt-8" @click="() => console.log('hello')">
+        <div v-if="!getId" class="flex items-center">
+          <BaseButton @click="() => setIsLoginOpen(true)">
             <span class="mx-4 font-medium text-[15px]">Log in</span>
           </BaseButton>
 
           <Icon name="mdi:dots-vertical" color="#161724" size="25" />
         </div>
 
-        <div class="flex items-center">
+        <div v-else class="flex items-center">
           <Icon
             class="ml-1 mr-4"
             name="carbon:send-alt"
