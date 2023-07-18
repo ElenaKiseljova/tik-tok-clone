@@ -1,22 +1,21 @@
 <script setup>
-const { $axios } = useNuxtApp();
+const { $userStore, $generalStore } = useNuxtApp();
+const { getTokens, login, getUser } = $userStore;
+const { setIsLoginOpen } = $generalStore;
 
 const email = ref('');
 const password = ref('');
 const errors = ref(null);
 
-const login = async () => {
+const loginHandler = async () => {
+  errors.value = null;
+
   try {
-    await $axios.get('/sanctum/csrf-cookie');
+    await getTokens();
+    await login(email.value, password.value);
+    await getUser();
 
-    await $axios.post('/login', {
-      email: 'elena@kiseljova.com',
-      password: '123456789',
-    });
-
-    const res = await $axios.get('/api/user');
-
-    console.log(res);
+    setIsLoginOpen(false);
   } catch (error) {
     console.log(error);
   }
@@ -53,7 +52,7 @@ const login = async () => {
     <button
       :disabled="!email || !password"
       :class="!email || !password ? 'bg-gray-200' : 'bg-[#f02c56]'"
-      @click="() => login()"
+      @click="() => loginHandler()"
       class="w-full text-[17px] font-semibold text-white py-3 rounded-sm"
     >
       Log in
