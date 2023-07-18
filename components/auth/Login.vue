@@ -1,7 +1,26 @@
 <script setup>
+const { $axios } = useNuxtApp();
+
 const email = ref('');
 const password = ref('');
 const errors = ref(null);
+
+const login = async () => {
+  try {
+    await $axios.get('/sanctum/csrf-cookie');
+
+    await $axios.post('/login', {
+      email: 'elena@kiseljova.com',
+      password: '123456789',
+    });
+
+    const res = await $axios.get('/api/user');
+
+    console.log(res);
+  } catch (error) {
+    console.log(error);
+  }
+};
 </script>
 
 <template>

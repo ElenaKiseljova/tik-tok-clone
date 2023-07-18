@@ -7,6 +7,10 @@ This project was created from this
 
 _v18.15.0_
 
+# API repository
+
+[Tik Tok Clone API](https://github.com/ElenaKiseljova/tik-tok-clone-api)
+
 # Nuxt 3 Minimal Starter
 
 Look at the
