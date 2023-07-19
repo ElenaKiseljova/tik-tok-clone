@@ -1,9 +1,32 @@
 <script setup>
+const { $userStore, $generalStore } = useNuxtApp();
+const { getTokens, register, getUser } = $userStore;
+const { setIsLoginOpen } = $generalStore;
+
 const name = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const errors = ref(null);
+
+const registerHandler = async () => {
+  errors.value = null;
+
+  try {
+    await getTokens();
+    await register(
+      name.value,
+      email.value,
+      password.value,
+      confirmPassword.value
+    );
+    await getUser();
+
+    setIsLoginOpen(false);
+  } catch (error) {
+    errors.value = error.response?.data.errors;
+  }
+};
 </script>
 
 <template>
@@ -16,7 +39,7 @@ const errors = ref(null);
       v-model:input="name"
       type="text"
       :autoFocus="true"
-      error=""
+      :error="errors && errors.name ? errors.name[0] : ''"
     />
   </div>
 
@@ -28,7 +51,7 @@ const errors = ref(null);
       placeholder="Email address"
       v-model:input="email"
       type="email"
-      error=""
+      :error="errors && errors.email ? errors.email[0] : ''"
     />
   </div>
 
@@ -38,7 +61,7 @@ const errors = ref(null);
       placeholder="Password"
       v-model:input="password"
       type="password"
-      error=""
+      :error="errors && errors.password ? errors.password[0] : ''"
     />
   </div>
 
@@ -50,7 +73,7 @@ const errors = ref(null);
       placeholder="Confirm Password"
       v-model:input="confirmPassword"
       type="password"
-      error=""
+      :error="errors && errors.confirmPassword ? errors.confirmPassword[0] : ''"
     />
   </div>
 
@@ -64,7 +87,7 @@ const errors = ref(null);
           ? 'bg-gray-200'
           : 'bg-[#f02c56]'
       "
-      @click="() => register()"
+      @click="() => registerHandler()"
       class="w-full text-[17px] font-semibold text-white py-3 rounded-sm"
     >
       Sign up

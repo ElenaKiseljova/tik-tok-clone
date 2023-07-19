@@ -2,13 +2,43 @@
 import { storeToRefs } from 'pinia';
 
 const { $userStore, $generalStore } = useNuxtApp();
-const { getId } = storeToRefs($userStore);
 
+const { getId, getImage } = storeToRefs($userStore);
+
+const { logout } = $userStore;
 const { setIsLoginOpen } = $generalStore;
 
 const route = useRoute();
+const router = useRouter();
 
 const showMenu = ref(false);
+
+onMounted(() => {
+  document.addEventListener('mouseup', (evt) => {
+    const popupMenu = document.querySelector('#PopupMenu');
+    if (popupMenu && !popupMenu.contains(evt.target)) {
+      showMenu.value = false;
+    }
+  });
+});
+
+const isLoggedIn = () => {
+  if (getId.value) {
+    router.push('/upload');
+  } else {
+    setIsLoginOpen(true);
+  }
+};
+
+const logoutHandler = () => {
+  try {
+    logout();
+
+    router.push('/');
+  } catch (error) {
+    console.log(error);
+  }
+};
 </script>
 
 <template>
@@ -43,7 +73,7 @@ const showMenu = ref(false);
       <div
         class="flex items-center justify-end gap-3 min-w-[275px] max-w-[320px] w-full"
       >
-        <BaseButton color="white" size="small">
+        <BaseButton @click="() => isLoggedIn()" color="white" size="small">
           <Icon name="mdi:plus" color="#000000" size="22" />
           <span class="px-2 font-medium text-[15px]">Upload</span>
         </BaseButton>
@@ -71,12 +101,15 @@ const showMenu = ref(false);
           />
 
           <div class="relative">
-            <button @click="() => (showMenu = !showMenu)" class="mt-1">
+            <button
+              @click="() => (showMenu = !showMenu)"
+              class="rounded-full w-[33px] h-[33px] mt-1 overflow-hidden"
+            >
               <img
                 width="33"
-                src="https://picsum.photos/id/83/300/320"
+                :src="getImage"
                 alt=""
-                class="rounded-full"
+                class="w-full h-full object-cover object-center"
               />
             </button>
 
@@ -86,6 +119,7 @@ const showMenu = ref(false);
               class="absolute bg-white rounded-lg py-1.5 w-[200px] shadow-xl border top-[43px] -right-2"
             >
               <NuxtLink
+                :to="`/profile/${getId}`"
                 @click="() => (showMenu = false)"
                 class="flex items-center justify-start py-3 px-2 hover:bg-gray-100 cursor-pointer"
               >
@@ -94,6 +128,7 @@ const showMenu = ref(false);
               </NuxtLink>
 
               <div
+                @click="() => logoutHandler()"
                 class="flex items-center justify-start py-3 px-1.5 hover:bg-gray-100 borer-t cursor-pointer"
               >
                 <Icon name="ic:outline-login" size="20" />

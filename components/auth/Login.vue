@@ -17,7 +17,7 @@ const loginHandler = async () => {
 
     setIsLoginOpen(false);
   } catch (error) {
-    console.log(error);
+    errors.value = error.response?.data.errors;
   }
 };
 </script>
@@ -32,7 +32,7 @@ const loginHandler = async () => {
       v-model:input="email"
       type="email"
       :autoFocus="true"
-      error=""
+      :error="errors && errors.email ? errors.email[0] : ''"
     />
   </div>
 
@@ -42,7 +42,7 @@ const loginHandler = async () => {
       placeholder="Password"
       v-model:input="password"
       type="password"
-      error=""
+      :error="errors && errors.password ? errors.password[0] : ''"
     />
   </div>
 
