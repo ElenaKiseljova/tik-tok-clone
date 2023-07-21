@@ -29,6 +29,17 @@ export const useGeneralStore = defineStore(
     const getSuggested = computed(() => suggested.value);
     const getFollowing = computed(() => following.value);
 
+    // Methods
+    const bodySwitch = (val) => {
+      if (val) {
+        document.documentElement.style.overflow = 'hidden';
+
+        return;
+      }
+
+      document.documentElement.style.overflow = 'visible';
+    };
+
     // Actions
     const setIsLoginOpen = (val) => {
       isLoginOpen.value = val;
@@ -74,6 +85,9 @@ export const useGeneralStore = defineStore(
       getIsBackUrl,
       getSuggested,
       getFollowing,
+
+      // Methods
+      bodySwitch,
 
       // Actions
       setIsLoginOpen,
