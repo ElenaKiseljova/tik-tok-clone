@@ -53,6 +53,8 @@ export const useGeneralStore = defineStore(
       await $axios.interceptors.response.use(
         (response) => {
           //  Call was successful, continue.
+
+          return response;
         },
         (error) => {
           switch (error.response.status) {
