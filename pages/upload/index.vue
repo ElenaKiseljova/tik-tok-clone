@@ -1,7 +1,17 @@
 <script setup>
+import { storeToRefs } from 'pinia';
+
 definePageMeta({
   layout: 'upload',
 });
+
+const router = useRouter();
+
+const { $userStore } = useNuxtApp();
+
+const { getId } = storeToRefs($userStore);
+
+const { createPost } = $userStore;
 
 const file = ref(null);
 const fileDisplay = ref(null);
@@ -59,6 +69,35 @@ const discardHandler = () => {
 
   caption.value = '';
 };
+
+const createPostHandler = async () => {
+  errors.value = null;
+
+  const data = new FormData();
+
+  data.append('video', fileData.value);
+  data.append('text', caption.value || '');
+
+  if (fileData.value && caption.value) {
+    isUploading.value = true;
+  }
+
+  try {
+    const res = await createPost(data);
+
+    if (res.status === 200) {
+      setTimeout(() => {
+        router.push(`/profile/${getId.value}`);
+
+        isUploading.value = false;
+      }, 1000);
+    }
+  } catch (error) {
+    errors.value = error.response?.data.errors;
+
+    isUploading.value = false;
+  }
+};
 </script>
 
 <template>
@@ -66,6 +105,18 @@ const discardHandler = () => {
     class="w-full mt-[80px] mb-[40px] bg-white shadow-lg rounded-md py-6 md:px-10 px-4"
   >
     <UploadError :errorType="errorType" />
+
+    <div
+      v-if="isUploading"
+      class="fixed flex items-center justify-center top-0 left-0 w-full h-screen bg-black z-50 bg-opacity-50"
+    >
+      <Icon
+        class="animate-spin ml-1"
+        name="mingcute:loading-line"
+        size="100"
+        color="#ffffff"
+      />
+    </div>
 
     <div class="">
       <div class="text-[23px] font-semibold">Upload video</div>
@@ -194,10 +245,18 @@ const discardHandler = () => {
           <BaseButton
             size="big"
             class="mt-8"
-            @click="() => console.log('hello')"
+            @click="() => createPostHandler()"
           >
             Post
           </BaseButton>
+        </div>
+        <div v-if="errors" class="mt-4">
+          <p v-if="errors && errors.video" class="text-red-600">
+            {{ errors.video[0] }}
+          </p>
+          <p v-if="errors && errors.text" class="text-red-600">
+            {{ errors.text[0] }}
+          </p>
         </div>
       </div>
     </div>

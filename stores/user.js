@@ -5,6 +5,7 @@ export const useUserStore = defineStore(
   'user',
   () => {
     const $axios = axios().provide.axios;
+
     const id = ref('');
     const name = ref('');
     const email = ref('');
@@ -51,6 +52,10 @@ export const useUserStore = defineStore(
       image.value = user.image;
     };
 
+    const createPost = async (data) => {
+      return await $axios.post('/api/posts', data);
+    };
+
     const logout = async () => {
       await $axios.post('/logout');
 
@@ -83,6 +88,7 @@ export const useUserStore = defineStore(
       register,
       getUser,
       logout,
+      createPost,
     };
   },
   {
