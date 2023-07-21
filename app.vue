@@ -3,6 +3,16 @@ import { storeToRefs } from 'pinia';
 
 const { $generalStore } = useNuxtApp();
 const { getIsLoginOpen, getIsEditProfileOpen } = storeToRefs($generalStore);
+
+const { hasSessionExpired } = $generalStore;
+
+onMounted(async () => {
+  try {
+    await hasSessionExpired();
+  } catch (error) {
+    console.log(error);
+  }
+});
 </script>
 
 <template>

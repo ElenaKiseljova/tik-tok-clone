@@ -74,6 +74,9 @@ export const useUserStore = defineStore(
       getBio,
       getImage,
 
+      // Methods
+      resetUser,
+
       // Actions
       getTokens,
       login,
