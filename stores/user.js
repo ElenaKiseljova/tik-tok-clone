@@ -52,6 +52,17 @@ export const useUserStore = defineStore(
       image.value = user.image;
     };
 
+    const updateUser = async (userName, userBio) => {
+      return await $axios.patch('/api/update-user', {
+        name: userName,
+        bio: userBio,
+      });
+    };
+
+    const updateUserImage = async (data) => {
+      return await $axios.post('/api/update-user-image', data);
+    };
+
     const createPost = async (data) => {
       return await $axios.post('/api/posts', data);
     };
@@ -72,6 +83,9 @@ export const useUserStore = defineStore(
     };
 
     return {
+      // Raw
+      id,
+
       // Getters
       getId,
       getName,
@@ -87,6 +101,8 @@ export const useUserStore = defineStore(
       login,
       register,
       getUser,
+      updateUser,
+      updateUserImage,
       logout,
       createPost,
     };

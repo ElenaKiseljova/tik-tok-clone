@@ -3,10 +3,15 @@ import { storeToRefs } from 'pinia';
 
 const { $generalStore, $userStore } = useNuxtApp();
 const { getIsLoginOpen, getIsEditProfileOpen } = storeToRefs($generalStore);
-const { getId } = storeToRefs($userStore);
+const { id } = storeToRefs($userStore);
 
-const { hasSessionExpired, bodySwitch, setIsLoginOpen, setIsEditProfileOpen } =
-  $generalStore;
+const {
+  hasSessionExpired,
+  getRandomUsers,
+  bodySwitch,
+  setIsLoginOpen,
+  setIsEditProfileOpen,
+} = $generalStore;
 const { getUser } = $userStore;
 
 watch(getIsLoginOpen, (val) => {
@@ -25,8 +30,10 @@ onMounted(async () => {
 
   try {
     await hasSessionExpired();
+    await getRandomUsers('suggested');
+    await getRandomUsers('following');
 
-    if (getId.value) {
+    if (id.value) {
       getUser();
     }
   } catch (error) {

@@ -5,9 +5,16 @@ import 'vue-advanced-cropper/dist/style.css';
 import { storeToRefs } from 'pinia';
 
 const { $userStore, $profileStore, $generalStore } = useNuxtApp();
-const { setIsEditProfileOpen } = $generalStore;
+
+const { getSuggested, getFollowing } = storeToRefs($generalStore);
+const { setIsEditProfileOpen, updateSideMenuImage } = $generalStore;
+
+const { getProfile } = $profileStore;
 
 const { getName, getBio, getImage } = storeToRefs($userStore);
+const { updateUser, updateUserImage, getUser } = $userStore;
+
+const route = useRoute();
 
 const uploadedImage = ref(null);
 const file = ref(null);
@@ -44,7 +51,49 @@ const getUploadedImage = (evt) => {
   uploadedImage.value = URL.createObjectURL(file.value);
 };
 
-const cropAndUpdateImage = () => {};
+const cropAndUpdateImage = async () => {
+  const { coordinates } = cropper.value.getResult();
+
+  const data = new FormData();
+
+  data.append('image', file.value || '');
+
+  data.append('height', coordinates.height || '');
+  data.append('width', coordinates.width || '');
+  data.append('left', coordinates.left || '');
+  data.append('top', coordinates.top || '');
+
+  try {
+    await updateUserImage(data);
+    await getUser();
+    await getProfile(route.params.id);
+
+    updateSideMenuImage(getSuggested.value, $userStore);
+    updateSideMenuImage(getFollowing.value, $userStore);
+
+    userImage.value = getImage.value;
+    uploadedImage.value = null;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateUserInfo = async () => {
+  try {
+    await updateUser(userName.value, userBio.value);
+    await getUser();
+    await getProfile(route.params.id);
+
+    userName.value = getName.value;
+    userBio.value = getBio.value;
+
+    setTimeout(() => {
+      setIsEditProfileOpen(false);
+    }, 100);
+  } catch (error) {
+    console.log(error);
+  }
+};
 </script>
 
 <template>
@@ -86,8 +135,8 @@ const cropAndUpdateImage = () => {};
                 <img
                   class="rounded-full"
                   width="95"
-                  src="https://picsum.photos/id/8/300/320"
-                  alt="User"
+                  :src="getImage"
+                  :alt="getName"
                 />
 
                 <div
@@ -177,6 +226,22 @@ const cropAndUpdateImage = () => {};
           class="flex items-center justify-end"
         >
           <BaseButton color="white" @click="() => setIsEditProfileOpen(false)">
+            Cancel
+          </BaseButton>
+
+          <BaseButton
+            :disabled="!isUpdated"
+            :class="!isUpdated ? 'bg-gray-200' : 'bg-[#f02c56]'"
+            class="ml-3"
+            color="red"
+            @click="() => updateUserInfo()"
+          >
+            Apply
+          </BaseButton>
+        </div>
+
+        <div id="CropperButtons" v-else class="flex items-center justify-end">
+          <BaseButton color="white" @click="() => (uploadedImage = null)">
             Cancel
           </BaseButton>
 

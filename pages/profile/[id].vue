@@ -65,7 +65,7 @@ onMounted(async () => {
         </BaseButton>
 
         <BaseButton v-else class="mt-3" size="small">
-          <Icon class="mt-0.5 mr-1" name="mdi:pencil" size="18" />
+          <Icon class="mt-0.5 mr-1" name="mdi:plus" size="18" />
           <span>Follow</span>
         </BaseButton>
       </div>

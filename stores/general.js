@@ -42,6 +42,14 @@ export const useGeneralStore = defineStore(
       selectedPost.value = val;
     };
 
+    const setSuggested = (val) => {
+      suggested.value = val;
+    };
+
+    const setFollowing = (val) => {
+      following.value = val;
+    };
+
     const hasSessionExpired = async () => {
       await $axios.interceptors.response.use(
         (response) => {
@@ -69,6 +77,18 @@ export const useGeneralStore = defineStore(
       );
     };
 
+    const getRandomUsers = async (type) => {
+      const { data } = await $axios.get('/api/get-random-users');
+
+      if (type === 'suggested') {
+        setSuggested(data.suggested);
+      }
+
+      if (type === 'folloving') {
+        setFollowing(data.folloving);
+      }
+    };
+
     // Methods
     const bodySwitch = (val) => {
       if (val) {
@@ -85,7 +105,15 @@ export const useGeneralStore = defineStore(
     };
 
     const setBackUrl = (url) => {
-      isBackUrl = url;
+      isBackUrl.value = url;
+    };
+
+    const updateSideMenuImage = (users, user) => {
+      users?.forEach((u) => {
+        if (u.id === user.id) {
+          u.image = user.image;
+        }
+      });
     };
 
     return {
@@ -104,11 +132,13 @@ export const useGeneralStore = defineStore(
       setIsEditProfileOpen,
       setSelectedPost,
       hasSessionExpired,
+      getRandomUsers,
 
       // Methods
       bodySwitch,
       allLowerCaseNoCaps,
       setBackUrl,
+      updateSideMenuImage,
     };
   },
   {
