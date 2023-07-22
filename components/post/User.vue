@@ -1,5 +1,9 @@
 <script setup>
-defineProps(['post']);
+const props = defineProps(['post']);
+
+const { $generalStore } = useNuxtApp();
+
+const { setBackUrl, setSelectedPost } = $generalStore;
 
 const route = useRoute();
 const router = useRouter();
@@ -10,7 +14,7 @@ const isLoaded = ref(false);
 
 onMounted(() => {
   if (video.value) {
-    videoSrc.value = '/flowers.mp4';
+    videoSrc.value = props.post.video;
 
     video.value.addEventListener('loadeddata', (evt) => {
       if (evt.target) {
@@ -36,10 +40,20 @@ const isHover = (bool) => {
     video.value.pause();
   }
 };
+
+const displayPost = (post) => {
+  setBackUrl(`/profile/${route.params.id}`);
+  setSelectedPost(null);
+
+  setTimeout(() => {
+    router.push(`/post/${post.id}`);
+  }, 300);
+};
 </script>
 
 <template>
   <div
+    @click="() => displayPost(post)"
     @mouseenter="() => isHover(true)"
     @mouseleave="() => isHover(false)"
     class="relative brightness-90 hover:brightness-[1.1] cursor-pointer"
@@ -68,7 +82,7 @@ const isHover = (bool) => {
 
     <div class="px-1">
       <div class="text-gray-700 text-[15px] pt-1 break-words">
-        This is some text
+        {{ post.text }}
       </div>
 
       <div class="flex items-center -ml-1 text-gray-600 font-bold text-xs">

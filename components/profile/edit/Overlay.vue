@@ -122,7 +122,7 @@ const cropAndUpdateImage = () => {};
                   placeholder="Username"
                   v-model:input="userName"
                   type="text"
-                  max="30"
+                  :max="30"
                 />
 
                 <p class="text-[11px] text-gray-500 mt-4">

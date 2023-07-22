@@ -29,17 +29,6 @@ export const useGeneralStore = defineStore(
     const getSuggested = computed(() => suggested.value);
     const getFollowing = computed(() => following.value);
 
-    // Methods
-    const bodySwitch = (val) => {
-      if (val) {
-        document.documentElement.style.overflow = 'hidden';
-
-        return;
-      }
-
-      document.documentElement.style.overflow = 'visible';
-    };
-
     // Actions
     const setIsLoginOpen = (val) => {
       isLoginOpen.value = val;
@@ -47,6 +36,10 @@ export const useGeneralStore = defineStore(
 
     const setIsEditProfileOpen = (val) => {
       isEditProfileOpen.value = val;
+    };
+
+    const setSelectedPost = (val) => {
+      selectedPost.value = val;
     };
 
     const hasSessionExpired = async () => {
@@ -76,6 +69,25 @@ export const useGeneralStore = defineStore(
       );
     };
 
+    // Methods
+    const bodySwitch = (val) => {
+      if (val) {
+        document.documentElement.style.overflow = 'hidden';
+
+        return;
+      }
+
+      document.documentElement.style.overflow = 'visible';
+    };
+
+    const allLowerCaseNoCaps = (str) => {
+      return str.split(' ').join('').toLowerCase();
+    };
+
+    const setBackUrl = (url) => {
+      isBackUrl = url;
+    };
+
     return {
       // Getters
       getIsLoginOpen,
@@ -87,13 +99,16 @@ export const useGeneralStore = defineStore(
       getSuggested,
       getFollowing,
 
-      // Methods
-      bodySwitch,
-
       // Actions
       setIsLoginOpen,
       setIsEditProfileOpen,
+      setSelectedPost,
       hasSessionExpired,
+
+      // Methods
+      bodySwitch,
+      allLowerCaseNoCaps,
+      setBackUrl,
     };
   },
   {

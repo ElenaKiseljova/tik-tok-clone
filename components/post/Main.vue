@@ -2,7 +2,7 @@
 const video = ref(null);
 
 onMounted(() => {
-  video.value.play();
+  video.value?.play();
 });
 </script>
 
