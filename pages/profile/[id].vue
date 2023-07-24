@@ -10,6 +10,7 @@ const { $userStore, $profileStore, $generalStore } = useNuxtApp();
 const { getId: userId } = storeToRefs($userStore);
 
 const { getProfile } = $profileStore;
+
 const {
   getPosts,
   getImage,
@@ -114,8 +115,8 @@ onMounted(async () => {
     <div
       class="mt-4 grid 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3"
     >
-      <div v-if="isShow" v-for="post in getPosts" class="">
-        <PostUser :key="post.id" :post="post" />
+      <div v-if="isShow" v-for="post in getPosts" :key="post.id">
+        <PostUser v-if="post" :post="post" />
       </div>
     </div>
   </div>

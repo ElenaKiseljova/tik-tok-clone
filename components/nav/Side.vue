@@ -1,28 +1,13 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 
-const { $generalStore, $userStore } = useNuxtApp();
-
-const { setIsLoginOpen } = $generalStore;
+const { $generalStore } = useNuxtApp();
 
 const { getSuggested, getFollowing } = storeToRefs($generalStore);
 
-const { getId } = storeToRefs($userStore);
-
 const route = useRoute();
-const router = useRouter();
 
-const isLoggedIn = (folUser) => {
-  if (!getId.value) {
-    setIsLoginOpen(true);
-
-    return;
-  }
-
-  setTimeout(() => {
-    router.push(`/profile/${folUser.id}`);
-  }, 200);
-};
+const { isLoggedIn } = useUserAndPost();
 </script>
 
 <template>
@@ -48,12 +33,8 @@ const isLoggedIn = (folUser) => {
 
       <div class="lg:block hidden pt-3" />
 
-      <div v-if="getSuggested" v-for="sug in getSuggested">
-        <div
-          :key="sug.id"
-          @click="() => isLoggedIn(sug)"
-          class="cursor-pointer"
-        >
+      <div v-if="getSuggested" v-for="sug in getSuggested" :key="sug.id">
+        <div @click="() => isLoggedIn(sug)" class="cursor-pointer">
           <MenuItemFollow :user="sug" />
         </div>
       </div>
@@ -72,12 +53,8 @@ const isLoggedIn = (folUser) => {
 
       <div class="lg:block hidden pt-3" />
 
-      <div v-if="getFollowing" v-for="fol in getFollowing">
-        <div
-          :key="fol.id"
-          @click="() => isLoggedIn(fol)"
-          class="cursor-pointer"
-        >
+      <div v-if="getFollowing" v-for="fol in getFollowing" :key="fol.id">
+        <div @click="() => isLoggedIn(fol)" class="cursor-pointer">
           <MenuItemFollow :user="fol" />
         </div>
       </div>

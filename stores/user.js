@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from '~/plugins/axios';
+import { useGeneralStore } from '~/stores/general';
 
 export const useUserStore = defineStore(
   'user',
@@ -67,6 +68,42 @@ export const useUserStore = defineStore(
       return await $axios.post('/api/posts', data);
     };
 
+    const likePost = async (post, isPostPage) => {
+      const res = await $axios.post('/api/likes', {
+        post_id: post.id,
+      });
+
+      let singlePost = null;
+      if (isPostPage) {
+        singlePost = post;
+      } else {
+        singlePost = useGeneralStore().getPosts?.find((p) => p.id === post.id);
+      }
+
+      singlePost?.likes.push(res.data.like);
+    };
+
+    const unlikePost = async (post, isPostPage) => {
+      let deleteLike = null;
+      let singlePost = null;
+
+      if (isPostPage) {
+        singlePost = post;
+      } else {
+        singlePost = useGeneralStore().getPosts?.find((p) => p.id === post.id);
+      }
+
+      deleteLike = singlePost?.likes.find((like) => like.user_id === id.value);
+
+      const { data } = await $axios.delete(`/api/likes/${deleteLike.id}`);
+
+      if (singlePost && data) {
+        const likes = singlePost.likes?.filter((l) => l.id !== data.like?.id);
+
+        singlePost.likes = likes;
+      }
+    };
+
     const logout = async () => {
       await $axios.post('/logout');
 
@@ -105,6 +142,8 @@ export const useUserStore = defineStore(
       updateUserImage,
       logout,
       createPost,
+      likePost,
+      unlikePost,
     };
   },
   {

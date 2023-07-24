@@ -50,6 +50,10 @@ export const useGeneralStore = defineStore(
       following.value = val;
     };
 
+    const setPosts = (val) => {
+      posts.value = val;
+    };
+
     const hasSessionExpired = async () => {
       await $axios.interceptors.response.use(
         (response) => {
@@ -87,6 +91,12 @@ export const useGeneralStore = defineStore(
       if (type === 'following') {
         setFollowing(data.following);
       }
+    };
+
+    const getAllUsersAndPosts = async () => {
+      const { data } = await $axios.get('/api/home');
+
+      setPosts(data.posts);
     };
 
     // Methods
@@ -133,6 +143,7 @@ export const useGeneralStore = defineStore(
       setSelectedPost,
       hasSessionExpired,
       getRandomUsers,
+      getAllUsersAndPosts,
 
       // Methods
       bodySwitch,
