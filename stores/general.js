@@ -42,6 +42,10 @@ export const useGeneralStore = defineStore(
       selectedPost.value = val;
     };
 
+    const setIds = (val) => {
+      ids.value = val;
+    };
+
     const setSuggested = (val) => {
       suggested.value = val;
     };
@@ -99,6 +103,13 @@ export const useGeneralStore = defineStore(
       setPosts(data.posts);
     };
 
+    const getPostById = async (postId) => {
+      const { data } = await $axios.get(`/api/posts/${postId}`);
+
+      setSelectedPost(data.post[0]);
+      setIds(data.ids);
+    };
+
     // Methods
     const bodySwitch = (val) => {
       if (val) {
@@ -144,6 +155,7 @@ export const useGeneralStore = defineStore(
       hasSessionExpired,
       getRandomUsers,
       getAllUsersAndPosts,
+      getPostById,
 
       // Methods
       bodySwitch,

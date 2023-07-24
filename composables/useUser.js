@@ -1,6 +1,6 @@
 import { storeToRefs } from 'pinia';
 
-export const useUserAndPost = (post) => {
+export const useUser = (post) => {
   const { $generalStore, $userStore } = useNuxtApp();
 
   const { setIsLoginOpen, setBackUrl, setSelectedPost } = $generalStore;
@@ -26,7 +26,7 @@ export const useUserAndPost = (post) => {
     }, 200);
   };
 
-  const likePost = async (post) => {
+  const likePost = async (post, isPostPage = false) => {
     if (!getId.value) {
       setIsLoginOpen(true);
 
@@ -34,13 +34,13 @@ export const useUserAndPost = (post) => {
     }
 
     try {
-      await userLikePost(post);
+      await userLikePost(post, isPostPage);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const unlikePost = async (post) => {
+  const unlikePost = async (post, isPostPage = false) => {
     if (!getId.value) {
       setIsLoginOpen(true);
 
@@ -48,7 +48,7 @@ export const useUserAndPost = (post) => {
     }
 
     try {
-      await userUnlikePost(post);
+      await userUnlikePost(post, isPostPage);
     } catch (error) {
       console.log(error);
     }

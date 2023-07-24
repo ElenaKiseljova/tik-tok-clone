@@ -1,8 +1,24 @@
 <script setup>
+import { storeToRefs } from 'pinia';
+
+const { $userStore, $generalStore, $profileStore } = useNuxtApp();
+
+const { addComment, deleteComment, deletePost } = $userStore;
+const { getId } = storeToRefs($userStore);
+
+const { setSelectedPost, getPostById, allLowerCaseNoCaps } = $generalStore;
+const { getSelectedPost, getIsBackUrl, getIds } = storeToRefs($generalStore);
+
+const { getProfile } = $profileStore;
+
 const route = useRoute();
 const router = useRouter();
 
-const video = ref(null);
+const { isLiked, likePost, unlikePost } = useUser(getSelectedPost);
+
+const videoRef = ref(null);
+const commentsRef = ref(null);
+
 const videoSrc = ref('');
 const isLoaded = ref(false);
 const comment = ref('');
@@ -11,28 +27,119 @@ const inputFocused = ref(false);
 watch(isLoaded, () => {
   if (isLoaded.value) {
     setTimeout(() => {
-      video.value.play();
+      videoRef.value.play();
     }, 500);
   }
 });
 
-onMounted(() => {
-  if (video.value) {
-    videoSrc.value = '/flowers.mp4';
+const loopThroughPostsDown = () => {
+  setTimeout(() => {
+    const idArrayReversed = [...getIds.value].reverse();
 
-    video.value.addEventListener('loadeddata', (evt) => {
+    let isBreak = false;
+
+    for (let i = 0; i < idArrayReversed.length; i++) {
+      const id = idArrayReversed[i];
+
+      if (Number(id) < Number(route.params.id)) {
+        router.push(`/post/${id}`);
+        isBreak = true;
+
+        return;
+      }
+    }
+
+    if (!isBreak) {
+      router.push(`/post/${idArrayReversed[0]}`);
+    }
+  }, 300);
+};
+
+const loopThroughPostsUp = () => {
+  setTimeout(() => {
+    let isBreak = false;
+
+    for (let i = 0; i < getIds.value.length; i++) {
+      const id = getIds.value[i];
+
+      if (Number(id) > Number(route.params.id)) {
+        router.push(`/post/${id}`);
+        isBreak = true;
+
+        return;
+      }
+    }
+
+    if (!isBreak) {
+      router.push(`/post/${getIds.value[0]}`);
+    }
+  }, 300);
+};
+
+const deletePostHandler = async () => {
+  const res = confirm('Are You sure You want to delete this post?');
+
+  try {
+    if (res) {
+      await deletePost(getSelectedPost.value);
+      await getProfile(getId);
+
+      router.push(`/profile/${getId.value}`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const addCommentHandler = async () => {
+  try {
+    await addComment(getSelectedPost.value, comment.value);
+
+    comment.value = null;
+
+    commentsRef.value?.scroll({ top: 0, behavior: 'smooth' });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deleteCommentHandler = async (post, commentId) => {
+  const res = confirm('Are You sure You want to delete this comment?');
+
+  try {
+    if (res) {
+      await deleteComment(post, commentId);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+onMounted(async () => {
+  setSelectedPost(null);
+
+  try {
+    await getPostById(route.params.id);
+
+    videoSrc.value = getSelectedPost.value?.video;
+
+    videoRef.value.addEventListener('loadeddata', (evt) => {
       if (evt.target) {
         setTimeout(() => {
           isLoaded.value = true;
         }, 500);
       }
     });
+  } catch (error) {
+    if (error?.response?.status === 400) {
+      router.push('/');
+    }
   }
 });
 
 onBeforeUnmount(() => {
-  video.value.pause();
-  video.value.currentTime = 0;
+  videoRef.value.pause();
+  videoRef.value.currentTime = 0;
 
   videoSrc.value = '';
 });
@@ -44,13 +151,13 @@ onBeforeUnmount(() => {
   >
     <div class="lg:w-[calc(100%-540px)] h-full relative">
       <NuxtLink
-        to="/"
+        :to="getIsBackUrl"
         class="absolute z-20 m-5 rounded-full bg-gray-700 p-1.5 hover:bg-gray-800"
       >
         <Icon name="material-symbols:close" color="#ffffff" size="27" />
       </NuxtLink>
 
-      <div v-if="true" class="">
+      <div v-if="getIds?.length > 0" class="">
         <button
           :disabled="!isLoaded"
           @click="() => loopThroughPostsUp()"
@@ -74,7 +181,7 @@ onBeforeUnmount(() => {
       />
 
       <video
-        v-if="true"
+        v-if="getSelectedPost?.video"
         class="absolute object-cover w-full my-auto z-[-1] h-screen"
         :src="videoSrc"
       />
@@ -93,8 +200,8 @@ onBeforeUnmount(() => {
 
       <div class="bg-black bg-opacity-70 lg:min-w-[480px]">
         <video
-          v-if="true"
-          ref="video"
+          v-if="getSelectedPost?.video"
+          ref="videoRef"
           loop
           muted
           class="h-screen mx-auto"
@@ -105,56 +212,70 @@ onBeforeUnmount(() => {
 
     <div
       id="InfoSection"
-      v-if="true"
+      v-if="getSelectedPost"
       class="lg:max-w-[550px] relative w-full h-full bg-white"
     >
       <div class="py-7" />
 
       <div class="flex items-center justify-between px-8">
         <div class="flex items-center">
-          <NuxtLink to="/">
+          <NuxtLink :to="`/profile/${getSelectedPost?.user?.id}`">
             <img
               class="rounded-full lg:mx-0 mx-auto"
               width="40"
-              src="https://picsum.photos/id/8/300/320"
-              alt="img"
+              :src="getSelectedPost?.user?.image"
+              :alt="getSelectedPost?.user?.name"
             />
           </NuxtLink>
 
           <div class="ml-3 pt-0.5">
-            <h4 class="text-[17px] font-semibold">User Name</h4>
+            <h4 class="text-[17px] font-semibold">
+              {{ allLowerCaseNoCaps(getSelectedPost?.user?.name) }}
+            </h4>
             <div class="text-[13px] -mt-5 font-light">
-              User Name
+              {{ getSelectedPost?.user?.name }}
               <span class="relative -top-[2px] text-[30px] pr-0.5">.</span>
-              <span class="font-medium">Date here</span>
+              <span class="font-medium">{{ getSelectedPost?.created_at }}</span>
             </div>
           </div>
         </div>
 
         <Icon
-          v-if="true"
-          @click="() => deletePost()"
+          v-if="getId === getSelectedPost?.user?.id"
+          @click="() => deletePostHandler()"
           class="cursor-pointer"
           name="material-symbols:delete-outline-sharp"
           size="25"
         />
       </div>
 
-      <div class="px-8 mt-4 text-sm">This is the post text</div>
+      <div class="px-8 mt-4 text-sm">{{ getSelectedPost?.text }}</div>
 
       <div class="px-8 mt-4 text-sm font-bold">
         <Icon name="mdi:music" size="17" />
-        original sound - User name
+        original sound - {{ allLowerCaseNoCaps(getSelectedPost?.user?.name) }}
       </div>
 
       <div class="flex items-center px-8 mt-8">
         <div class="pb-4 text-center flex items-center">
-          <button class="rounded-full bg-gray-200 p-2 cursor-pointer">
-            <Icon name="mdi:heart" size="25" />
+          <button
+            @click="
+              () =>
+                isLiked
+                  ? unlikePost(getSelectedPost, true)
+                  : likePost(getSelectedPost, true)
+            "
+            class="rounded-full bg-gray-200 p-2 cursor-pointer"
+          >
+            <Icon
+              name="mdi:heart"
+              size="25"
+              :color="isLiked ? '#f02c56' : ''"
+            />
           </button>
 
           <span class="text-xs pl-2 pr-4 text-gray-800 font-semibold">
-            123
+            {{ getSelectedPost?.likes?.length }}
           </span>
         </div>
 
@@ -164,39 +285,50 @@ onBeforeUnmount(() => {
           </div>
 
           <span class="text-xs pl-2 pr-4 text-gray-800 font-semibold">
-            11
+            {{ getSelectedPost?.comments?.length }}
           </span>
         </div>
       </div>
 
       <div
+        ref="commentsRef"
         id="Comments"
         class="bg-[#f8f8f8] z-0 w-full h-[calc(100%-273px)] border-t-2 overflow-auto"
       >
         <div class="pt-2" />
 
-        <div v-if="false" class="text-center mt-6 text-xl text-gray-500">
+        <div
+          v-if="getSelectedPost?.comments?.length < 1"
+          class="text-center mt-6 text-xl text-gray-500"
+        >
           No comments...
         </div>
 
-        <div v-else class="flex items-center justify-between px-8 mt-4">
+        <div
+          v-else
+          v-for="comment in getSelectedPost?.comments"
+          :key="comment.id"
+          class="flex items-center justify-between px-8 mt-4"
+        >
           <div class="flex items-center relative w-full">
-            <NuxtLink to="/">
+            <NuxtLink :to="`/profile/${comment.user.id}`">
               <img
                 class="absolute top-0 rounded-full lg:mx-0 mx-auto"
                 width="40"
-                src="https://picsum.photos/id/8/300/320"
-                alt=""
+                :src="comment.user.image"
+                :alt="comment.user.name"
               />
             </NuxtLink>
             <div class="ml-14 pt-0.5 w-full">
               <div
                 class="text-[18px] font-semibold flex items-center justify-between"
               >
-                User name
+                {{ comment.user.name }}
                 <Icon
-                  v-if="true"
-                  @click="() => deleteComment()"
+                  v-if="getId === comment.user.id"
+                  @click="
+                    () => deleteCommentHandler(getSelectedPost, comment.id)
+                  "
                   class="cursor-pointer"
                   name="material-symbols:delete-outline-sharp"
                   size="25"
@@ -204,11 +336,7 @@ onBeforeUnmount(() => {
               </div>
 
               <div class="text-[15px] font-light">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Repellendus odit suscipit exercitationem atque qui harum
-                voluptates, illum optio facere commodi distinctio error, ut
-                animi obcaecati. Ducimus assumenda exercitationem itaque
-                facilis?
+                {{ comment.text }}
               </div>
             </div>
           </div>
@@ -219,7 +347,7 @@ onBeforeUnmount(() => {
 
       <div
         id="CreateComment"
-        v-if="true"
+        v-if="getId"
         class="absolute flex items-center justify-between bottom-0 bg-white h-[85px] lg:max-w-[550px] w-full py-5 px-8 border-t-2"
       >
         <div
@@ -242,7 +370,7 @@ onBeforeUnmount(() => {
 
         <button
           :disabled="!comment"
-          @click="() => addComment()"
+          @click="() => addCommentHandler()"
           :class="comment ? 'text-[#f02c56] cursor-pointer' : 'text-gray-400'"
           class="font-semibold text-sm ml-5 pr-1"
         >

@@ -10,7 +10,7 @@ const { post } = toRefs(props);
 const router = useRouter();
 
 const { isLoggedIn, displayPost, likePost, unlikePost, isLiked } =
-  useUserAndPost(post);
+  useUser(post);
 
 const postRef = ref(null);
 const videoRef = ref(null);
@@ -21,11 +21,11 @@ onMounted(() => {
       const cur = entries[0];
 
       if (cur?.isIntersecting) {
-        console.log(`Element is palying ${post.value.id}`);
+        // console.log(`Element is palying ${post.value.id}`);
 
         videoRef.value?.play();
       } else {
-        console.log(`Element is paused ${post.value.id}`);
+        // console.log(`Element is paused ${post.value.id}`);
 
         videoRef.value?.pause();
       }

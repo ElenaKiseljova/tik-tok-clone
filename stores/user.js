@@ -68,6 +68,10 @@ export const useUserStore = defineStore(
       return await $axios.post('/api/posts', data);
     };
 
+    const deletePost = async (post) => {
+      return await $axios.delete(`/api/posts/${post.id}`);
+    };
+
     const likePost = async (post, isPostPage) => {
       const res = await $axios.post('/api/likes', {
         post_id: post.id,
@@ -102,6 +106,40 @@ export const useUserStore = defineStore(
 
         singlePost.likes = likes;
       }
+    };
+
+    const addComment = async (post, comment) => {
+      const res = await $axios.post('/api/comments', {
+        post_id: post.id,
+        comment,
+      });
+
+      if (res.status === 200) {
+        await updateComments(post);
+      }
+    };
+
+    const deleteComment = async (post, commentId) => {
+      const res = await $axios.delete(`/api/comments/${commentId}`, {
+        post_id: post.id,
+      });
+
+      if (res.status === 200) {
+        await updateComments(post);
+      }
+    };
+
+    const updateComments = async (post) => {
+      const { data } = await $axios.get(`/api/profiles/${post?.user?.id}`);
+
+      data?.posts?.forEach((p) => {
+        if (p.id === post.id) {
+          useGeneralStore().setSelectedPost({
+            ...useGeneralStore().getSelectedPost,
+            comments: p.comments,
+          });
+        }
+      });
     };
 
     const logout = async () => {
@@ -142,8 +180,11 @@ export const useUserStore = defineStore(
       updateUserImage,
       logout,
       createPost,
+      deletePost,
       likePost,
       unlikePost,
+      addComment,
+      deleteComment,
     };
   },
   {

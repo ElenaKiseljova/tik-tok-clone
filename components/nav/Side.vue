@@ -7,7 +7,7 @@ const { getSuggested, getFollowing } = storeToRefs($generalStore);
 
 const route = useRoute();
 
-const { isLoggedIn } = useUserAndPost();
+const { isLoggedIn } = useUser();
 </script>
 
 <template>
