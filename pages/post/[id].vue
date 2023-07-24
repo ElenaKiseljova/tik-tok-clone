@@ -1,6 +1,10 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 
+definePageMeta({
+  middleware: 'auth',
+});
+
 const { $userStore, $generalStore, $profileStore } = useNuxtApp();
 
 const { addComment, deleteComment, deletePost } = $userStore;

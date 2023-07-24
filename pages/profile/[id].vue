@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 
 definePageMeta({
   layout: 'default',
+  middleware: 'auth',
 });
 
 const { $userStore, $profileStore, $generalStore } = useNuxtApp();

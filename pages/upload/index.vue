@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 
 definePageMeta({
   layout: 'upload',
+  middleware: 'auth',
 });
 
 const router = useRouter();
