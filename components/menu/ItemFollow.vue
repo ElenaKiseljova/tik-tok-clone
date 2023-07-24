@@ -1,13 +1,18 @@
 <script setup>
 defineProps(['user']);
+
+const { $generalStore } = useNuxtApp();
+
+const { allLowerCaseNoCaps } = $generalStore;
 </script>
 
 <template>
   <div class="flex items-center hover:bg-gray-100 rounded-md py-1.5 px-2">
     <div class="w-[35px] h-[35px] shrink-0">
       <img
+        v-if="user?.image"
         class="rounded-full lg:mx-0 mx-auto w-full h-full object-cover object-center"
-        src="https://picsum.photos/id/8/300/320"
+        :src="user.image"
         alt="img"
         width="35"
       />
@@ -15,7 +20,9 @@ defineProps(['user']);
 
     <div class="lg:pl-2.5 lg:block hidden">
       <div class="flex items-center">
-        <div class="font-bold text-[14px]">User name</div>
+        <div class="font-bold text-[14px]">
+          {{ allLowerCaseNoCaps(user?.name || '') }}
+        </div>
 
         <div class="ml-1 rounded-full bg-[#58d5ec] h-[14px] relative">
           <Icon
@@ -27,7 +34,9 @@ defineProps(['user']);
         </div>
       </div>
 
-      <div class="font-light text-[12px] text-gray-600">User name</div>
+      <div class="font-light text-[12px] text-gray-600">
+        {{ user?.name || '' }}
+      </div>
     </div>
   </div>
 </template>

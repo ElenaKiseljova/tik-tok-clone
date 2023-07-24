@@ -1,5 +1,28 @@
 <script setup>
+import { storeToRefs } from 'pinia';
+
+const { $generalStore, $userStore } = useNuxtApp();
+
+const { setIsLoginOpen } = $generalStore;
+
+const { getSuggested, getFollowing } = storeToRefs($generalStore);
+
+const { getId } = storeToRefs($userStore);
+
 const route = useRoute();
+const router = useRouter();
+
+const isLoggedIn = (folUser) => {
+  if (!getId.value) {
+    setIsLoginOpen(true);
+
+    return;
+  }
+
+  setTimeout(() => {
+    router.push(`/profile/${folUser.id}`);
+  }, 200);
+};
 </script>
 
 <template>
@@ -25,8 +48,14 @@ const route = useRoute();
 
       <div class="lg:block hidden pt-3" />
 
-      <div class="cursor-pointer">
-        <MenuItemFollow />
+      <div v-if="getSuggested" v-for="sug in getSuggested">
+        <div
+          :key="sug.id"
+          @click="() => isLoggedIn(sug)"
+          class="cursor-pointer"
+        >
+          <MenuItemFollow :user="sug" />
+        </div>
       </div>
 
       <button class="lg:block hidden text-[#f02c56] pt-1.5 pl-2 text-[13px]">
@@ -43,8 +72,14 @@ const route = useRoute();
 
       <div class="lg:block hidden pt-3" />
 
-      <div class="cursor-pointer">
-        <MenuItemFollow />
+      <div v-if="getFollowing" v-for="fol in getFollowing">
+        <div
+          :key="fol.id"
+          @click="() => isLoggedIn(fol)"
+          class="cursor-pointer"
+        >
+          <MenuItemFollow :user="fol" />
+        </div>
       </div>
 
       <button class="lg:block hidden text-[#f02c56] pt-1.5 pl-2 text-[13px]">
@@ -56,11 +91,11 @@ const route = useRoute();
       <div class="lg:block hidden text-[11px] text-gray-500">
         <p class="pt-4 px-2">About Newsroom Contact Careers ByteDance</p>
         <p class="pt-4 px-2">
-          TikTok for GoodAdvertiseDevelopersTransparencyTikTok RewardsTikTok
-          Embeds
+          TikTok for Good Advertise Developers Transparency TikTok Rewards
+          TikTok Embeds
         </p>
         <p class="pt-4 px-2">
-          HelpSafetyTermsPrivacyCreator PortalCommunity Guidelines
+          Help Safety Terms Privacy Creator Portal Community Guidelines
         </p>
         <p class="pt-4 px-2">© 2023 TikTok</p>
       </div>

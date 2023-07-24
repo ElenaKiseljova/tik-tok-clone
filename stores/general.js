@@ -84,8 +84,8 @@ export const useGeneralStore = defineStore(
         setSuggested(data.suggested);
       }
 
-      if (type === 'folloving') {
-        setFollowing(data.folloving);
+      if (type === 'following') {
+        setFollowing(data.following);
       }
     };
 

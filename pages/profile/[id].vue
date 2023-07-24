@@ -115,7 +115,7 @@ onMounted(async () => {
       class="mt-4 grid 2xl:grid-cols-6 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-3"
     >
       <div v-if="isShow" v-for="post in getPosts" class="">
-        <PostUser :post="post" />
+        <PostUser :key="post.id" :post="post" />
       </div>
     </div>
   </div>
