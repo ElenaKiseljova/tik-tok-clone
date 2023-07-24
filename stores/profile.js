@@ -39,6 +39,8 @@ export const useProfileStore = defineStore(
       }
 
       posts.value = res?.data?.posts;
+
+      allLikesCount();
     };
 
     // Methods
@@ -48,6 +50,16 @@ export const useProfileStore = defineStore(
       bio.value = '';
       image.value = '';
       posts.value = '';
+    };
+
+    const allLikesCount = () => {
+      allLikes.value = 0;
+
+      posts.value.forEach((post) => {
+        post.likes.forEach((like) => {
+          allLikes.value++;
+        });
+      });
     };
 
     return {

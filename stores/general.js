@@ -131,8 +131,8 @@ export const useGeneralStore = defineStore(
 
     const updateSideMenuImage = (users, user) => {
       users?.forEach((u) => {
-        if (u.id === user.id) {
-          u.image = user.image;
+        if (u.id === user.getId) {
+          u.image = user.getImage;
         }
       });
     };

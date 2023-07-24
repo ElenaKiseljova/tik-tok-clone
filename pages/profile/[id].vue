@@ -18,6 +18,7 @@ const {
   getName,
   getBio,
   getId: profileId,
+  getAllLikes,
 } = storeToRefs($profileStore);
 
 const { setIsEditProfileOpen, allLowerCaseNoCaps } = $generalStore;
@@ -89,7 +90,7 @@ onMounted(async () => {
       </div>
 
       <div class="mr-4">
-        <span class="font-bold">3K</span>
+        <span class="font-bold">{{ getAllLikes }}</span>
         <span class="font-light text-gray-500 text-[15px] pl-1.5">Likes</span>
       </div>
     </div>

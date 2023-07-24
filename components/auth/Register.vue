@@ -1,7 +1,7 @@
 <script setup>
 const { $userStore, $generalStore } = useNuxtApp();
 const { getTokens, register, getUser } = $userStore;
-const { setIsLoginOpen } = $generalStore;
+const { setIsLoginOpen, getRandomUsers } = $generalStore;
 
 const name = ref('');
 const email = ref('');
@@ -21,6 +21,9 @@ const registerHandler = async () => {
       confirmPassword.value
     );
     await getUser();
+
+    await getRandomUsers('suggested');
+    await getRandomUsers('following');
 
     setIsLoginOpen(false);
   } catch (error) {
