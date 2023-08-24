@@ -1,6 +1,9 @@
 {
   "name": "tik-tok-clone",
   "private": true,
+  "engines": {
+    "node": "^18.15.0"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -25,3 +28,4 @@
     "vue-advanced-cropper": "^2.8.8"
   }
 }
+
